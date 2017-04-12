@@ -1,11 +1,38 @@
-Tutaj będziemy wstrzykiwać w prosty sposób wartości do beanów (komponentów).
-Możemy to osiągnąć także poprzez plik XML (konfiguracyjny) -> poprzez ustawienie properties.
+W poprzednich projektach zastosowaliśmy antywzorzec:
+Nie wymusiliśmy ustawienia wartości beana (loggera) w beanie (usersRepo) w
+pliku konfiguracja.xml, więc jeżeli użytkownik nie poda loggera jako property 
+przy konfiguracji beana usersRepo, przy próbie uruchomienia programu wyskoczy 
+"nullPointerException". 
 
-UWAGA!!! -> jeżeli wstrzykujemy do beana prosty atrybut -> robimy to poprzez "value"
-		 -> jeżeli wstrzykujemy do beana referencję do innego beana -> poprzez "ref"
-		 
-Własności properties przy ustawianiu wartości korzystają z setterów!!!!!!!!!
------! UWAGA !-------
-W XML-u tagi, które nie mają nic w środku można zamknąć />, czyli np zamiast:
-<property></property> można zapisać <property/>
+Aby temu zapobiec:
+1. Usuwamy metodę setLogger z interfejsu UsersRepository i z jego implementacji. (wywalamy też propety "logger" z konfiguracji UsersRepo)
+2. Tworzymy konstruktor w UsersRepositoryImpl (z parametrem Logger)
+3. Podajemy parametry do konstruktora w konfiguracji (constructor-arg) -> teraz program powinien zadziałać
+
+
+
+
+
+
+
+--------------------------------UWAGA!!!--------------------------------
+Co się dzieje podczas tworzenia beanów?
+Spring widząc, że bean ma być danej klasy, to uruchamia jej domyślny 
+(lub bezargumentowy, zaimplementowany) konstruktor, aby stworzyć obiekt. 
+Następnie JUŻ PO STWORZENIU OBIEKTU spring wstrzykuje mu właściwości
+poprzez settery.
+
+Co się stanie, jeżeli w constructor-args podamy parametry nie po kolei, względem tego
+jak będą występować w konstruktorze?
+Wtedy wywali błąd. Trzeba z tym uważać -> spring bieże pierwszy constructor-arg pasujący typem
+do podanego w konstruktorze (NALEŻY ZACHOWAĆ KOLEJNOŚĆ, lub zastosować atrybut NAME, aby
+spring nie próbował sam się domyślać, gdzie ma to wstawiać -> wtedy kolejność nie ma znaczenia).
+
+UWAGA!!!! -> taki kod nie skompiluje się jednak gdy spróbujemy go uruchomić bez ustawionej flagi 
+DEBUG (maszyna wirtualna Javy nie widzi wtedy nazw parametrów w konstruktorze). Aby temu zapobiec 
+stosujemy atrybut index, gdzie podajemy kolejność wystąpienia parametru w kontruktorze.
+
+Tworząc beany nie musimy posługiwać się interfejsami, ale jest to raczej porządane.
+
+
 

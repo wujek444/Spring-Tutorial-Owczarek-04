@@ -5,11 +5,14 @@
 
 	<bean id="mojLogger"
 		class="pl.wojcik.jakub.spring_tutorial.implementations.LoggerImpl">
-		<property name="name" value="MójLogger"/>
-		<property name="version" value="3"/>
+		<property name="name" value="MójLogger" />
+		<property name="version" value="1" />
 	</bean>
 	<bean id="repozytoriumUzytkownikow"
 		class="pl.wojcik.jakub.spring_tutorial.implementations.UsersRepositoryImpl">
-		<property name="logger" ref="mojLogger"/> <!-- odpowiednik usersRepository.setLogger(logger); -->
+		<constructor-arg index="0" name="logger" ref="mojLogger" /> <!-- podajemy parametr konstruktora (referencja do loggera) -->
+		<constructor-arg index="2" name="dbName" value="db" />
+		<constructor-arg index="1" name="localization" value="http://127.0.0.1:3456" />
+
 	</bean>
 </beans>
